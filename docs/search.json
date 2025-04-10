@@ -21,32 +21,11 @@
     "text": "Math\nIn addition to regular text using the Markdown specification, you can also write mathematics, enclosed between dollar signs. The syntax for writing math is very similar to the syntax used in the \\(\\LaTeX\\) markup language. For example, $f(x) \\approx y$ renders to \\(f(x) \\approx y\\). To place complex mathematical expressions on their own lines, use double dollar signs. For example, the expression\n$$\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2$$\nrenders to:\n\\[\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2\\;.\\]\nBehind the scenes, math is powered by the MathJax engine. For more on how to write math, check this handy tutorial and quick reference."
   },
   {
-    "objectID": "posts/example-blog-post/index.html",
-    "href": "posts/example-blog-post/index.html",
-    "title": "Hello Blog",
+    "objectID": "posts/logisitc_regression/index.html",
+    "href": "posts/logisitc_regression/index.html",
+    "title": "Implementing Logistic Regression",
     "section": "",
-    "text": "from source import Perceptron\nThis is an example of the blog posts that you’ll submit as your primary form of learning demonstration in CSCI 0451. I created this post by modifying the file posts/example-blog-post/index.ipynb in VSCode. You can also use JupyterLab for this editing if you prefer. Finally, it is possible to write blog posts without using notebooks by writing .qmd files, as illustrated here."
-  },
-  {
-    "objectID": "posts/example-blog-post/index.html#math",
-    "href": "posts/example-blog-post/index.html#math",
-    "title": "Hello Blog",
-    "section": "Math",
-    "text": "Math\nIn addition to regular text using the Markdown specification, you can also write mathematics, enclosed between dollar signs. The syntax for writing math is very similar to the syntax used in the \\(\\LaTeX\\) markup language. For example, $f(x) \\approx y$ renders to \\(f(x) \\approx y\\). To place complex mathematical expressions on their own lines, use double dollar signs. For example, the expression\n$$\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2$$\nrenders to:\n\\[\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2\\;.\\]\nBehind the scenes, math is powered by the MathJax engine. For more on how to write math, check this handy tutorial and quick reference."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "My Awesome CSCI 0451 Blog",
-    "section": "",
-    "text": "Auditing Bias\n\n\n\n\n\nCreating a machine learning model that predicts employment status and checking for bias.\n\n\n\n\n\nMar 5, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nClassifying Palmer Penguins\n\n\n\n\n\nCreating a machine learning model to classify penguins given a list of attributes and measurements\n\n\n\n\n\nJan 24, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nImplementing the Perceptron Algorithm\n\n\n\n\n\nIn this blog post, we will complete an implementation of the perceptron algorithm and test it in several experiments.\n\n\n\n\n\nJan 24, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nTimnit Gebru\n\n\n\n\n\nA new blog post that I just made!\n\n\n\n\n\nMar 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\n\n\n\n\n\n\nSecond Post\n\n\n\n\n\nA new blog post that I just made!\n\n\n\n\n\nMar 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\n\n\n\n\n\n\nHello Blog\n\n\n\n\n\nAn example blog post illustrating the key techniques you’ll need to demonstrate your learning in CSCI 0451.\n\n\n\n\n\nJan 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "Robsan Dinka\n\nThis is my blog. Enjoy!"
+    "text": "%load_ext autoreload\n%autoreload 2\nfrom logistic import LogisticRegression, GradientDescentOptimizer\n\n\nimport torch\n\ndef classification_data(n_points = 300, noise = 0.2, p_dims = 2):\n    \n    y = torch.arange(n_points) &gt;= int(n_points/2)\n    y = 1.0*y\n    X = y[:, None] + torch.normal(0.0, noise, size = (n_points,p_dims))\n    X = torch.cat((X, torch.ones((X.shape[0], 1))), 1)\n    \n    return X, y\n\nX, y = classification_data(noise = 0.5)\n\n\n\n\n(torch.Size([300, 3]), torch.Size([300]))"
   },
   {
     "objectID": "posts/auditing-bias/index.html",
@@ -75,6 +54,34 @@
     "title": "Auditing Bias",
     "section": "Group Measures",
     "text": "Group Measures\nWhat is the accuracy of your model for each group? : The following cells will calculate the accuracy of this model on test data for each group.\n\nwcm = confusion_matrix(y_test[group_test == 1], y2_hat[group_test == 1])\nwacc = (wcm[0,0] + wcm[1,1]) / wcm.sum()\nwaccuracy = f\"The accuracy of the model for white people is {wacc:.2%}\"\nwaccuracy\n\n'The accuracy of the model for white people is 82.58%'\n\n\n\nbcm = confusion_matrix(y_test[group_test == 2], y2_hat[group_test == 2])\nbacc = (bcm[0,0] + bcm[1,1]) / bcm.sum()\nbaccuracy = f\"The accuracy of the model for black people is {bacc:.2%}\"\nbaccuracy\n\n'The accuracy of the model for black people is 80.95%'\n\n\n\nocm = confusion_matrix(y_test[group_test &gt; 2], y2_hat[group_test &gt; 2])\noacc = (ocm[0,0] + ocm[1,1]) / ocm.sum()\noaccuracy = f\"The accuracy of the model for other people is {oacc:.2%}\"\noaccuracy\n\n'The accuracy of the model for other people is 81.61%'\n\n\nIn the upcoming cells we will be calculating the positive predictive value (PPV) for each group.\n\nwppv = wcm[1,1] / (wcm[1,1] + wcm[0,1])\nwpp_value = f\"The positive predictive value of the model for white people is {wppv:.2%}\"\nwpp_value\n\n'The positive predictive value of the model for white people is 80.43%'\n\n\n\nbppv = bcm[1,1] / (bcm[1,1] + bcm[0,1])\nbpp_value = f\"The positive predictive value of the model for black people is {bppv:.2%}\"\nbpp_value\n\n'The positive predictive value of the model for black people is 72.16%'\n\n\n\noppv = ocm[1,1] / (ocm[1,1] + ocm[0,1])\nopp_value = f\"The positive predictive value of the model for other people is {oppv:.2%}\"\nopp_value\n\n'The positive predictive value of the model for other people is 74.57%'\n\n\nNext, we will calculate the false positive rate (FPR) and false negative rate (FNR) for each group.\n\nwfnr = wcm[1,0] / (wcm[1,0] + wcm[1,1])\nwfpr = wcm[0,1] / (wcm[0,1] + wcm[0,0])\nwf_rates = f\"The false negative rate of the model for white people is {wfnr:.2%} and the false positive rate is {wfpr:.2%}\"\nwf_rates\n\n'The false negative rate of the model for white people is 15.67% and the false positive rate is 19.04%'\n\n\n\nbfnr = bcm[1,0] / (bcm[1,0] + bcm[1,1])\nbfpr = bcm[0,1] / (bcm[0,1] + bcm[0,0])\nbf_rates = f\"The false negative rate of the model for black people is {bfnr:.2%} and the false positive rate is {bfpr:.2%}\"\nbf_rates\n\n'The false negative rate of the model for black people is 21.80% and the false positive rate is 17.46%'\n\n\n\nofnr = ocm[1,0] / (ocm[1,0] + ocm[1,1])\nofpr = ocm[0,1] / (ocm[0,1] + ocm[0,0])\nof_rates = f\"The false negative rate of the model for other people is {ofnr:.2%} and the false positive rate is {ofpr:.2%}\"\nof_rates\n\n'The false negative rate of the model for other people is 15.79% and the false positive rate is 20.21%'"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Robsan Dinka\n\nThis is my blog. Enjoy!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "My Awesome CSCI 0451 Blog",
+    "section": "",
+    "text": "Auditing Bias\n\n\n\n\n\nCreating a machine learning model that predicts employment status and checking for bias.\n\n\n\n\n\nMar 5, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nImplementing Logistic Regression\n\n\n\n\n\nFill this in later\n\n\n\n\n\nJan 24, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nClassifying Palmer Penguins\n\n\n\n\n\nCreating a machine learning model to classify penguins given a list of attributes and measurements\n\n\n\n\n\nJan 24, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nImplementing the Perceptron Algorithm\n\n\n\n\n\nIn this blog post, we will complete an implementation of the perceptron algorithm and test it in several experiments.\n\n\n\n\n\nJan 24, 2025\n\n\nRobsan Dinka\n\n\n\n\n\n\n\n\n\n\n\n\nTimnit Gebru\n\n\n\n\n\nA new blog post that I just made!\n\n\n\n\n\nMar 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\n\n\n\n\n\n\nSecond Post\n\n\n\n\n\nA new blog post that I just made!\n\n\n\n\n\nMar 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\n\n\n\n\n\n\nHello Blog\n\n\n\n\n\nAn example blog post illustrating the key techniques you’ll need to demonstrate your learning in CSCI 0451.\n\n\n\n\n\nJan 10, 2023\n\n\nPhil Chodrow\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/example-blog-post/index.html",
+    "href": "posts/example-blog-post/index.html",
+    "title": "Hello Blog",
+    "section": "",
+    "text": "from source import Perceptron\nThis is an example of the blog posts that you’ll submit as your primary form of learning demonstration in CSCI 0451. I created this post by modifying the file posts/example-blog-post/index.ipynb in VSCode. You can also use JupyterLab for this editing if you prefer. Finally, it is possible to write blog posts without using notebooks by writing .qmd files, as illustrated here."
+  },
+  {
+    "objectID": "posts/example-blog-post/index.html#math",
+    "href": "posts/example-blog-post/index.html#math",
+    "title": "Hello Blog",
+    "section": "Math",
+    "text": "Math\nIn addition to regular text using the Markdown specification, you can also write mathematics, enclosed between dollar signs. The syntax for writing math is very similar to the syntax used in the \\(\\LaTeX\\) markup language. For example, $f(x) \\approx y$ renders to \\(f(x) \\approx y\\). To place complex mathematical expressions on their own lines, use double dollar signs. For example, the expression\n$$\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2$$\nrenders to:\n\\[\\mathcal{L}(a, b) = \\sum_{i = 1}^n (ax_i + b - y_i)^2\\;.\\]\nBehind the scenes, math is powered by the MathJax engine. For more on how to write math, check this handy tutorial and quick reference."
   },
   {
     "objectID": "posts/new-new-test-post/index.html",

@@ -26,8 +26,7 @@ class LinearModel:
         if self.w is None: 
             self.w = torch.rand((X.size()[1]))
 
-        # your computation here: compute the vector of scores s
-        return self.w @ X.T
+        return X@self.w
     
 
     def predict(self, X):
@@ -67,7 +66,7 @@ class Perceptron(LinearModel):
         """
         y_ = 2*y - 1.0
         s_ = self.score(X)
-        x = s_ * y_ <= 0
+        x = s_ * y_ < 0
         return (1.0 * x).mean()
         
        
