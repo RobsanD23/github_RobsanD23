@@ -64,10 +64,14 @@ class Perceptron(LinearModel):
         
         y_ = 2*y - 1
         """
-        y_ = 2*y - 1.0
-        s_ = self.score(X)
-        x = s_ * y_ < 0
-        return (1.0 * x).mean()
+        loss = 0.0
+        num_points = X.shape[0]
+        # your computation here: compute the loss
+        for i in range(num_points):
+            if self.score(X)[i] * y[i] <= 0:
+                loss += 1.0
+        loss /= num_points
+        return loss
         
        
 

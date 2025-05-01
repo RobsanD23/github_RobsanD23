@@ -8,7 +8,7 @@
 
 <meta name="author" content="Robsan Dinka">
 <meta name="dcterms.date" content="2025-01-24">
-<meta name="description" content="Fill this in later">
+<meta name="description" content="Builiding a logistic regression model from scratch">
 
 <title>Implementing Logistic Regression – My Awesome CSCI 0451 Blog</title>
 <style>
@@ -171,7 +171,7 @@ background-size: cover;
       <h1 class="title">Implementing Logistic Regression</h1>
                   <div>
         <div class="description">
-          Fill this in later
+          Builiding a logistic regression model from scratch
         </div>
       </div>
                 </div>
@@ -209,33 +209,213 @@ background-size: cover;
 
 
 
-<div id="f03cdc8a" class="cell">
+<div id="f03cdc8a" class="cell" data-execution_count="142">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> logistic <span class="im">import</span> LogisticRegression, GradientDescentOptimizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="1bf165b7" class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classification_data(n_points <span class="op">=</span> <span class="dv">300</span>, noise <span class="op">=</span> <span class="fl">0.2</span>, p_dims <span class="op">=</span> <span class="dv">2</span>):</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> torch.arange(n_points) <span class="op">&gt;=</span> <span class="bu">int</span>(n_points<span class="op">/</span><span class="dv">2</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fl">1.0</span><span class="op">*</span>y</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> y[:, <span class="va">None</span>] <span class="op">+</span> torch.normal(<span class="fl">0.0</span>, noise, size <span class="op">=</span> (n_points,p_dims))</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> torch.cat((X, torch.ones((X.shape[<span class="dv">0</span>], <span class="dv">1</span>))), <span class="dv">1</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X, y</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> classification_data(noise <span class="op">=</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div id="234914fb" class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>(torch.Size([300, 3]), torch.Size([300]))</code></pre>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> logistic <span class="im">import</span> LinearModel, LogisticRegression, GradientDescentOptimizer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload</code></pre>
 </div>
 </div>
+<section id="abstract" class="level1">
+<h1>Abstract</h1>
+<p>In this blog post we will be implementing our own logistic regression model from scratch. Here you will be able to see the experiments that we have done with the model. The experiments highlight 4 topics: Vanilla Gradient Descent, Gradient Descent with Momentum, Overfitting, and Empirical Data. To see the implementation of our Logistic Regression model you can view this link https://github.com/RobsanD23/github_RobsanD23/blob/main/posts/logisitc_regression/logistic.py.</p>
+</section>
+<section id="experiments" class="level1">
+<h1>Experiments</h1>
+<p>In the following cell, we generate data for a classification problem. This function takes 3 parameters: n_points, noise, and p_dims. n_points simply tell the funtion how many data points to make, noise determine how difficult the classification problem is, and p_dims is the number of features for each data point.</p>
+<div id="1bf165b7" class="cell" data-execution_count="160">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classification_data(n_points <span class="op">=</span> <span class="dv">300</span>, noise <span class="op">=</span> <span class="fl">0.2</span>, p_dims <span class="op">=</span> <span class="dv">2</span>):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> torch.arange(n_points) <span class="op">&gt;=</span> <span class="bu">int</span>(n_points<span class="op">/</span><span class="dv">2</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> <span class="fl">1.0</span><span class="op">*</span>y</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> y[:, <span class="va">None</span>] <span class="op">+</span> torch.normal(<span class="fl">0.0</span>, noise, size <span class="op">=</span> (n_points,p_dims))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> torch.cat((X, torch.ones((X.shape[<span class="dv">0</span>], <span class="dv">1</span>))), <span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X, y</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> classification_data(noise <span class="op">=</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="ea0dc597" class="cell" data-execution_count="144">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>y.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="144">
+<pre><code>torch.Size([300])</code></pre>
+</div>
+</div>
+<div id="6dc1b356" class="cell" data-execution_count="145">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a simple example of how to use the LogisticRegression class.</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Main purpose is to make sure that there are no syntax errors in our implementation.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression() </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>LR.score(X)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> GradientDescentOptimizer(LR)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>): </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    opt.step(X, y, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="fl">0.9</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>opt.model.w</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="145">
+<pre><code>tensor([ 2.6817,  3.1163, -2.9485])</code></pre>
+</div>
+</div>
+<section id="vanilla-gradient-descent" class="level2">
+<h2 class="anchored" data-anchor-id="vanilla-gradient-descent">Vanilla Gradient Descent</h2>
+<p>In this section, we are going to set beta to 0 so that we can visualize “regular” gradient descent (i.e., without momentum). Below we will perform a step for 3000 iterations and at each iteration we with compute the loss and store it in a list.</p>
+<div id="222c5dc5" class="cell" data-execution_count="146">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>LR2 <span class="op">=</span> LogisticRegression()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>LR2.score(X)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>opt2 <span class="op">=</span> GradientDescentOptimizer(LR2)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>loss_vec <span class="op">=</span> []</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3000</span>):</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span>LR2.loss(X, y)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    loss_vec.append(loss) <span class="co"># keep track of the loss over time. </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    opt2.step(X, y, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now its time to plot the loss after each step of the gradient descent optimizer. As you can see from the graph below, the loss is decreasing at each step. This is a good sign that our gradient descent optimizer is working correctly.</p>
+<div id="a886df40" class="cell" data-execution_count="147">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>plt.plot(torch.arange(<span class="dv">1</span>, <span class="bu">len</span>(loss_vec)<span class="op">+</span><span class="dv">1</span>), loss_vec, color <span class="op">=</span> <span class="st">"black"</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"Number of gradient descent iterations"</span>, ylabel <span class="op">=</span> <span class="st">"Loss"</span>, title <span class="op">=</span> <span class="st">"Regular Gradient Descent"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="benefits-of-momentum" class="level2">
+<h2 class="anchored" data-anchor-id="benefits-of-momentum">Benefits of Momentum</h2>
+<p>Now we are going to set beta to 0.9 so that we can take advantage of our implementation of gradient descent with momentum algorithm. To see the effect of momentum we will keep every other argument the same as before and compare the results.</p>
+<div id="c6b30825" class="cell" data-execution_count="148">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>LR3 <span class="op">=</span> LogisticRegression()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>LR3.score(X)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>opt3 <span class="op">=</span> GradientDescentOptimizer(LR3)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>loss_v <span class="op">=</span> []</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3000</span>):</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    loss <span class="op">=</span>LR3.loss(X, y)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    loss_v.append(loss) <span class="co"># keep track of the loss over time. </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    opt3.step(X, y, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="fl">0.9</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.plot(torch.arange(<span class="dv">1</span>, <span class="bu">len</span>(loss_v)<span class="op">+</span><span class="dv">1</span>), loss_v, color <span class="op">=</span> <span class="st">"black"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> plt.gca().<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="st">"Number of gradient descent iterations"</span>, ylabel <span class="op">=</span> <span class="st">"Loss"</span>,title <span class="op">=</span> <span class="st">"Loss with momentum"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As you can see from the 2 graphs above, gradient descent with momentum is able to achieve optimal loss with fewer iterations than regular gradient descent. For regular gradient descent, it took about 3000 iterations to reach optimal loss, while gradient descent with momentum was able to do it in abut 250 iterations. This is a significant improvement and shows the power of using momentum in gradient descent optimization.</p>
+</section>
+<section id="overfitting" class="level2">
+<h2 class="anchored" data-anchor-id="overfitting">Overfitting</h2>
+<p>Now we are going to show the effect of overfitting our model on training data. To start we are going to create a training set and a test set shown in the cell below. Note that the number of features is larger than the number of data points.</p>
+<div id="56d284dc" class="cell" data-execution_count="149">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>X_train, y_train <span class="op">=</span> classification_data(<span class="dv">50</span>, <span class="fl">0.8</span>, <span class="dv">100</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> classification_data(<span class="dv">50</span>, <span class="fl">0.8</span>, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we are going to train our model on the training set until it achieves 100% accuracy.</p>
+<div id="5685b4ff" class="cell" data-execution_count="150">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>LR4 <span class="op">=</span> LogisticRegression()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>LR4.score(X_train)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>opt4 <span class="op">=</span> GradientDescentOptimizer(LR4)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    opt4.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="fl">0.9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In the cell below, we calculate the accuracy of our model on the training set and see that it is 100%. In the following cell, we will calculate the accuracy of our model on the test set and see that it is only 78%. This is a significant drop in accuracy and shows that our model is overfitting the training data. This is becuase our model is overfitted on the training data and is not able to generalize to the test data.</p>
+<div id="0dda20f3" class="cell" data-execution_count="151">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(LR4.predict(X_train) <span class="op">==</span> y_train).<span class="bu">float</span>().mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="151">
+<pre><code>tensor(1.)</code></pre>
+</div>
+</div>
+<div id="ffe98a09" class="cell" data-execution_count="152">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(LR4.predict(X_test) <span class="op">==</span> y_test ).<span class="bu">float</span>().mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="152">
+<pre><code>tensor(0.8400)</code></pre>
+</div>
+</div>
+</section>
+<section id="performance-on-empirical-data" class="level2">
+<h2 class="anchored" data-anchor-id="performance-on-empirical-data">Performance on Empirical Data</h2>
+<p>In this section, we are going to train and test our model on a real dataset. The imported dataset contains various features and based on these features we are going to decide whether a person dropped out of school of if they graduated. Below we import the dataset and change the data in to torch tensors.</p>
+<div id="dc3a2666" class="cell" data-execution_count="157">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ucimlrepo <span class="im">import</span> fetch_ucirepo </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># fetch dataset </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>predict_students_dropout_and_academic_success <span class="op">=</span> fetch_ucirepo(<span class="bu">id</span><span class="op">=</span><span class="dv">697</span>) </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># data (as pandas dataframes) </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> predict_students_dropout_and_academic_success.data.features</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> torch.tensor(X.values, dtype <span class="op">=</span> torch.float32) </span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> predict_students_dropout_and_academic_success.data.targets </span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>y[<span class="st">'num'</span>] <span class="op">=</span> (y[<span class="st">'Target'</span>] <span class="op">==</span> <span class="st">"Graduate"</span>).astype(<span class="bu">float</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> torch.tensor(y[<span class="st">'num'</span>], dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># metadata </span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># print(predict_students_dropout_and_academic_success.metadata) </span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># variable information </span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co"># print(predict_students_dropout_and_academic_success.variables)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\robsa\AppData\Local\Temp\ipykernel_48004\847060615.py:10: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y['num'] = (y['Target'] == "Graduate").astype(float)</code></pre>
+</div>
+</div>
+<p>Here we split the data in to a training set and a test set. We will use the training set to train our model and the test set to evaluate the performance of our model.</p>
+<div id="fb68ab85" class="cell" data-execution_count="154">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom split ratios</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>train_ratio <span class="op">=</span> <span class="fl">0.6</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>validation_ratio <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>test_ratio <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># First split: train and temp (validation + test)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>X_train, X_temp, y_train, y_temp <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span>(<span class="dv">1</span> <span class="op">-</span> train_ratio), random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Second split: validation and test</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>X_val, X_test, y_val, y_test <span class="op">=</span> train_test_split(X_temp, y_temp, test_size<span class="op">=</span>(test_ratio <span class="op">/</span> (test_ratio <span class="op">+</span> validation_ratio)), random_state<span class="op">=</span><span class="dv">42</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we will train our model on the training set and see what the accuracy is on it.</p>
+<div id="7ef6bb8b" class="cell" data-execution_count="166">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>LR5 <span class="op">=</span> LogisticRegression()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>LR5.score(X_train)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>opt5 <span class="op">=</span> GradientDescentOptimizer(LR5)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100000</span>): </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    opt5.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="fl">0.99</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>(LR5.predict(X_train) <span class="op">==</span> y_train).<span class="bu">float</span>().mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="166">
+<pre><code>tensor(0.8255)</code></pre>
+</div>
+</div>
+<p>Now on the test set we see that the accuracy is about 82%.</p>
+<div id="5d458722" class="cell" data-execution_count="167">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(LR5.predict(X_test) <span class="op">==</span> y_test).<span class="bu">float</span>().mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="167">
+<pre><code>tensor(0.8237)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In this blog post we have implemented our own logistic regression model from scratch. We have shown that gradient descent with momentum achieves a lower loss with fewer iterations when compared to vanilla gradient descent. Also we have show that overfitting a model can lead to increased accuracy on the training data while also decreasing accuracy on testing data. Finally, we have trained and tested our model on a real dataset and achieved an accuracy of 82%.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -217,7 +217,7 @@ background-size: cover;
 <section id="abstract" class="level2">
 <h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
 <p>In this blog, we are going to use ACS data to train a model to predict whether a person is emloyed or not give a list of features. Then, we will analyze the model to see if there is any racial bias in the employment prediction. Lastly, we will discuss the possible effects of this model if it was used in the real world.</p>
-<div id="cell-3" class="cell" data-execution_count="2">
+<div id="cell-3" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> folktables <span class="im">import</span> ACSDataSource, ACSEmployment, BasicProblem, adult_filter</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -230,7 +230,7 @@ background-size: cover;
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>acs_data <span class="op">=</span> data_source.get_data(states<span class="op">=</span>[STATE], download<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>acs_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="1">
 <div>
 
 
@@ -389,10 +389,10 @@ background-size: cover;
 </div>
 </div>
 </div>
-<div id="cell-4" class="cell" data-execution_count="3">
+<div id="cell-4" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>possible_features<span class="op">=</span>[<span class="st">'AGEP'</span>, <span class="st">'SCHL'</span>, <span class="st">'MAR'</span>, <span class="st">'RELP'</span>, <span class="st">'DIS'</span>, <span class="st">'ESP'</span>, <span class="st">'CIT'</span>, <span class="st">'MIG'</span>, <span class="st">'MIL'</span>, <span class="st">'ANC'</span>, <span class="st">'NATIVITY'</span>, <span class="st">'DEAR'</span>, <span class="st">'DEYE'</span>, <span class="st">'DREM'</span>, <span class="st">'SEX'</span>, <span class="st">'RAC1P'</span>, <span class="st">'ESR'</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>acs_data[possible_features].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -526,10 +526,10 @@ background-size: cover;
 </div>
 </div>
 </div>
-<div id="cell-5" class="cell" data-execution_count="4">
+<div id="cell-5" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>features_to_use <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> possible_features <span class="cf">if</span> f <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"ESR"</span>, <span class="st">"RAC1P"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-6" class="cell" data-execution_count="5">
+<div id="cell-6" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>EmploymentProblem <span class="op">=</span> BasicProblem(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    features<span class="op">=</span>features_to_use,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ESR'</span>,</span>
@@ -541,12 +541,12 @@ background-size: cover;
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>features, label, group <span class="op">=</span> EmploymentProblem.df_to_numpy(acs_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-7" class="cell" data-execution_count="6">
+<div id="cell-7" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test, group_train, group_test <span class="op">=</span> train_test_split(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    features, label, group, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-8" class="cell" data-execution_count="7">
+<div id="cell-8" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
@@ -554,7 +554,7 @@ background-size: cover;
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> make_pipeline(StandardScaler(), LogisticRegression())</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="6">
 <style>#sk-container-id-1 {
   /* Definition of color scheme common for light and dark mode */
   --sklearn-color-text: #000;
@@ -975,40 +975,40 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
                 ('logisticregression', LogisticRegression())])</pre></div> </div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox"><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>StandardScaler</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.6/modules/generated/sklearn.preprocessing.StandardScaler.html">?<span>Documentation for StandardScaler</span></a></div></label><div class="sk-toggleable__content fitted"><pre>StandardScaler()</pre></div> </div></div><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox"><label for="sk-estimator-id-3" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>LogisticRegression</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.6/modules/generated/sklearn.linear_model.LogisticRegression.html">?<span>Documentation for LogisticRegression</span></a></div></label><div class="sk-toggleable__content fitted"><pre>LogisticRegression()</pre></div> </div></div></div></div></div></div>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="8">
+<div id="cell-9" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> model.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-10" class="cell" data-execution_count="9">
+<div id="cell-10" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(y_hat <span class="op">==</span> y_test).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>0.7860075927791121</code></pre>
 </div>
 </div>
-<div id="cell-11" class="cell" data-execution_count="10">
+<div id="cell-11" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(y_hat <span class="op">==</span> y_test)[group_test <span class="op">==</span> <span class="dv">1</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>0.787089618456078</code></pre>
 </div>
 </div>
-<div id="cell-12" class="cell" data-execution_count="11">
+<div id="cell-12" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(y_hat <span class="op">==</span> y_test)[group_test <span class="op">==</span> <span class="dv">2</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>0.7692307692307693</code></pre>
 </div>
 </div>
-<div id="cell-13" class="cell" data-execution_count="12">
+<div id="cell-13" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_test, y_hat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>array([[10439,  3251],
        [ 2273,  9851]], dtype=int64)</code></pre>
 </div>
 </div>
-<div id="cell-14" class="cell" data-execution_count="13">
+<div id="cell-14" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>model2 <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">5</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>model2.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <style>#sk-container-id-2 {
   /* Definition of color scheme common for light and dark mode */
   --sklearn-color-text: #000;
@@ -1427,30 +1427,30 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 </style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>DecisionTreeClassifier(max_depth=5)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox" checked=""><label for="sk-estimator-id-4" class="sk-toggleable__label fitted sk-toggleable__label-arrow"><div><div>DecisionTreeClassifier</div></div><div><a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.6/modules/generated/sklearn.tree.DecisionTreeClassifier.html">?<span>Documentation for DecisionTreeClassifier</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></div></label><div class="sk-toggleable__content fitted"><pre>DecisionTreeClassifier(max_depth=5)</pre></div> </div></div></div></div>
 </div>
 </div>
-<div id="cell-15" class="cell" data-execution_count="14">
+<div id="cell-15" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>y2_hat <span class="op">=</span> model2.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-16" class="cell" data-execution_count="15">
+<div id="cell-16" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(y2_hat <span class="op">==</span> y_test).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="14">
 <pre><code>0.8241651816843574</code></pre>
 </div>
 </div>
-<div id="cell-17" class="cell" data-execution_count="16">
+<div id="cell-17" class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(y2_hat <span class="op">==</span> y_test)[group_test <span class="op">==</span> <span class="dv">1</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <pre><code>0.8258207630878438</code></pre>
 </div>
 </div>
-<div id="cell-18" class="cell" data-execution_count="17">
+<div id="cell-18" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(y2_hat <span class="op">==</span> y_test)[group_test <span class="op">==</span> <span class="dv">2</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>0.8094951923076923</code></pre>
 </div>
 </div>
-<div id="cell-19" class="cell" data-execution_count="18">
+<div id="cell-19" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>confusion_matrix(y_test, y2_hat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>array([[11089,  2601],
        [ 1938, 10186]], dtype=int64)</code></pre>
 </div>
@@ -1459,13 +1459,13 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 </section>
 <section id="basic-descriptives" class="level1">
 <h1>Basic Descriptives</h1>
-<div id="cell-21" class="cell" data-execution_count="19">
+<div id="cell-21" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(X_train, columns <span class="op">=</span> features_to_use)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"group"</span>] <span class="op">=</span> group_train</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"label"</span>] <span class="op">=</span> y_train</span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
 
@@ -1721,50 +1721,50 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 </div>
 </div>
 <p>How many individuals are in the data?</p>
-<div id="cell-23" class="cell" data-execution_count="20">
+<div id="cell-23" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="20">
+<div class="cell-output cell-output-display" data-execution_count="19">
 <pre><code>103252</code></pre>
 </div>
 </div>
 <p>Of these individuals, what proportion have target label equal to 1? In employment prediction, these would correspond to individuals who are employed.</p>
-<div id="cell-25" class="cell" data-execution_count="21">
+<div id="cell-25" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>is_employed <span class="op">=</span> df[<span class="st">"label"</span>] <span class="op">==</span> <span class="va">True</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>is_employed.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="21">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>48096</code></pre>
 </div>
 </div>
 <p>Of these individuals, how many are in each of the groups?</p>
-<div id="cell-27" class="cell" data-execution_count="22">
+<div id="cell-27" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>is_employed_white <span class="op">=</span> df[group_train <span class="op">==</span> <span class="dv">1</span>][<span class="st">"label"</span>] <span class="op">==</span> <span class="va">True</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>is_employed_white.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="22">
+<div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>42897</code></pre>
 </div>
 </div>
-<div id="cell-28" class="cell" data-execution_count="23">
+<div id="cell-28" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>is_employed_black <span class="op">=</span> df[group_train <span class="op">==</span> <span class="dv">2</span>][<span class="st">"label"</span>] <span class="op">==</span> <span class="va">True</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>is_employed_black.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="23">
+<div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>2585</code></pre>
 </div>
 </div>
-<div id="cell-29" class="cell" data-execution_count="24">
+<div id="cell-29" class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>is_employed_other <span class="op">=</span> df[group_train <span class="op">&gt;</span><span class="dv">2</span>][<span class="st">"label"</span>] <span class="op">==</span> <span class="va">True</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>is_employed_other.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <pre><code>2614</code></pre>
 </div>
 </div>
-<div id="cell-30" class="cell" data-execution_count="25">
+<div id="cell-30" class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>is_employed_white.<span class="bu">sum</span>() <span class="op">+</span> is_employed_black.<span class="bu">sum</span>() <span class="op">+</span> is_employed_other.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="25">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <pre><code>48096</code></pre>
 </div>
 </div>
 <p>In each group what proportion of individuals have target label equal to 1?</p>
-<div id="cell-32" class="cell" data-execution_count="26">
+<div id="cell-32" class="cell" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>total_black <span class="op">=</span> (group_train <span class="op">==</span> <span class="dv">2</span>).<span class="bu">sum</span>()</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>total_white <span class="op">=</span> (group_train <span class="op">==</span> <span class="dv">1</span>).<span class="bu">sum</span>()</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>total_other <span class="op">=</span> (group_train <span class="op">&gt;</span> <span class="dv">2</span>).<span class="bu">sum</span>()</span>
@@ -1775,12 +1775,12 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> <span class="ss">f"White: </span><span class="sc">{</span>x<span class="sc">:.2%}</span><span class="ss">, Black: </span><span class="sc">{</span>y<span class="sc">:.2%}</span><span class="ss">, Other: </span><span class="sc">{</span>z<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="26">
+<div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>'White: 47.53%, Black: 38.27%, Other: 41.82%'</code></pre>
 </div>
 </div>
 <p>Check for intersectional trends by studying the proportion of positive target labels broken out by your chosen group labels and an addtional group label.</p>
-<div id="cell-34" class="cell" data-execution_count="27">
+<div id="cell-34" class="cell" data-execution_count="26">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># is_female = df["SEX"] == 2</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is_male = df["SEX"] == 1</span></span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1791,7 +1791,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="co"># employed_by_group = [ewm, ebm, ewf, ebf]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-35" class="cell" data-execution_count="28">
+<div id="cell-35" class="cell" data-execution_count="27">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># total_white_m = df[is_male &amp; (group_train == 1)].shape[0]</span></span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># total_black_m = df[is_male &amp; (group_train == 2)].shape[0]</span></span>
 <span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># total_white_f = df[is_female &amp; (group_train == 1)].shape[0]</span></span>
@@ -1803,7 +1803,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="co"># rate_by_group</span></span>
 <span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-36" class="cell" data-execution_count="29">
+<div id="cell-36" class="cell" data-execution_count="28">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1825,36 +1825,36 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <section id="overall-measures" class="level2">
 <h2 class="anchored" data-anchor-id="overall-measures">Overall Measures</h2>
 <p><em>What is the overall accuracy of your model?</em> : My best performing model was a Decision Tree Classifier with a max depth of 5. The following cells will calculate the accuracy of this model on test data.</p>
-<div id="cell-38" class="cell" data-execution_count="30">
+<div id="cell-38" class="cell" data-execution_count="29">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y2_hat)</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>acc <span class="op">=</span> (cm[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">+</span> cm[<span class="dv">1</span>,<span class="dv">1</span>]) <span class="op">/</span> cm.<span class="bu">sum</span>()</span>
 <span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> <span class="ss">f"The overall accuracy of the model is </span><span class="sc">{</span>acc<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>accuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="30">
+<div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>'The overall accuracy of the model is 82.42%'</code></pre>
 </div>
 </div>
-<div id="cell-39" class="cell" data-execution_count="31">
+<div id="cell-39" class="cell" data-execution_count="30">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ppv <span class="op">=</span> cm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">/</span> (cm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span> cm[<span class="dv">0</span>,<span class="dv">1</span>])</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>pp_value <span class="op">=</span> <span class="ss">f"The positive predictive value of the model is </span><span class="sc">{</span>ppv<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>pp_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="31">
+<div class="cell-output cell-output-display" data-execution_count="30">
 <pre><code>'The positive predictive value of the model is 79.66%'</code></pre>
 </div>
 </div>
-<div id="cell-40" class="cell" data-execution_count="32">
+<div id="cell-40" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>fnr <span class="op">=</span> cm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">/</span> (cm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">+</span> cm[<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>fn_rate <span class="op">=</span> <span class="ss">f"The false negative rate of the model is </span><span class="sc">{</span>fnr<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>fn_rate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="31">
 <pre><code>'The false negative rate of the model is 15.98%'</code></pre>
 </div>
 </div>
-<div id="cell-41" class="cell" data-execution_count="33">
+<div id="cell-41" class="cell" data-execution_count="32">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>fpr <span class="op">=</span> cm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">/</span> (cm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">+</span> cm[<span class="dv">0</span>,<span class="dv">0</span>])</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>fp_rate <span class="op">=</span> <span class="ss">f"The false positive rate of the model is </span><span class="sc">{</span>fpr<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>fp_rate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="32">
 <pre><code>'The false positive rate of the model is 19.00%'</code></pre>
 </div>
 </div>
@@ -1862,83 +1862,83 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <section id="group-measures" class="level2">
 <h2 class="anchored" data-anchor-id="group-measures">Group Measures</h2>
 <p><em>What is the accuracy of your model for each group?</em> : The following cells will calculate the accuracy of this model on test data for each group.</p>
-<div id="cell-43" class="cell" data-execution_count="34">
+<div id="cell-43" class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>wcm <span class="op">=</span> confusion_matrix(y_test[group_test <span class="op">==</span> <span class="dv">1</span>], y2_hat[group_test <span class="op">==</span> <span class="dv">1</span>])</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>wacc <span class="op">=</span> (wcm[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">+</span> wcm[<span class="dv">1</span>,<span class="dv">1</span>]) <span class="op">/</span> wcm.<span class="bu">sum</span>()</span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>waccuracy <span class="op">=</span> <span class="ss">f"The accuracy of the model for white people is </span><span class="sc">{</span>wacc<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>waccuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="33">
 <pre><code>'The accuracy of the model for white people is 82.58%'</code></pre>
 </div>
 </div>
-<div id="cell-44" class="cell" data-execution_count="35">
+<div id="cell-44" class="cell" data-execution_count="34">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>bcm <span class="op">=</span> confusion_matrix(y_test[group_test <span class="op">==</span> <span class="dv">2</span>], y2_hat[group_test <span class="op">==</span> <span class="dv">2</span>])</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>bacc <span class="op">=</span> (bcm[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">+</span> bcm[<span class="dv">1</span>,<span class="dv">1</span>]) <span class="op">/</span> bcm.<span class="bu">sum</span>()</span>
 <span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>baccuracy <span class="op">=</span> <span class="ss">f"The accuracy of the model for black people is </span><span class="sc">{</span>bacc<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>baccuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<div class="cell-output cell-output-display" data-execution_count="34">
 <pre><code>'The accuracy of the model for black people is 80.95%'</code></pre>
 </div>
 </div>
-<div id="cell-45" class="cell" data-execution_count="36">
+<div id="cell-45" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>ocm <span class="op">=</span> confusion_matrix(y_test[group_test <span class="op">&gt;</span> <span class="dv">2</span>], y2_hat[group_test <span class="op">&gt;</span> <span class="dv">2</span>])</span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>oacc <span class="op">=</span> (ocm[<span class="dv">0</span>,<span class="dv">0</span>] <span class="op">+</span> ocm[<span class="dv">1</span>,<span class="dv">1</span>]) <span class="op">/</span> ocm.<span class="bu">sum</span>()</span>
 <span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>oaccuracy <span class="op">=</span> <span class="ss">f"The accuracy of the model for other people is </span><span class="sc">{</span>oacc<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>oaccuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="36">
+<div class="cell-output cell-output-display" data-execution_count="35">
 <pre><code>'The accuracy of the model for other people is 81.61%'</code></pre>
 </div>
 </div>
 <p>In the upcoming cells we will be calculating the positive predictive value (PPV) for each group.</p>
-<div id="cell-47" class="cell" data-execution_count="37">
+<div id="cell-47" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>wppv <span class="op">=</span> wcm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">/</span> (wcm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span> wcm[<span class="dv">0</span>,<span class="dv">1</span>])</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>wpp_value <span class="op">=</span> <span class="ss">f"The positive predictive value of the model for white people is </span><span class="sc">{</span>wppv<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>wpp_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="37">
+<div class="cell-output cell-output-display" data-execution_count="36">
 <pre><code>'The positive predictive value of the model for white people is 80.43%'</code></pre>
 </div>
 </div>
-<div id="cell-48" class="cell" data-execution_count="38">
+<div id="cell-48" class="cell" data-execution_count="37">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>bppv <span class="op">=</span> bcm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">/</span> (bcm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span> bcm[<span class="dv">0</span>,<span class="dv">1</span>])</span>
 <span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>bpp_value <span class="op">=</span> <span class="ss">f"The positive predictive value of the model for black people is </span><span class="sc">{</span>bppv<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>bpp_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="38">
+<div class="cell-output cell-output-display" data-execution_count="37">
 <pre><code>'The positive predictive value of the model for black people is 72.16%'</code></pre>
 </div>
 </div>
-<div id="cell-49" class="cell" data-execution_count="39">
+<div id="cell-49" class="cell" data-execution_count="38">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>oppv <span class="op">=</span> ocm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">/</span> (ocm[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">+</span> ocm[<span class="dv">0</span>,<span class="dv">1</span>])</span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>opp_value <span class="op">=</span> <span class="ss">f"The positive predictive value of the model for other people is </span><span class="sc">{</span>oppv<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>opp_value</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="39">
+<div class="cell-output cell-output-display" data-execution_count="38">
 <pre><code>'The positive predictive value of the model for other people is 74.57%'</code></pre>
 </div>
 </div>
 <p>Next, we will calculate the false positive rate (FPR) and false negative rate (FNR) for each group.</p>
-<div id="cell-51" class="cell" data-execution_count="40">
+<div id="cell-51" class="cell" data-execution_count="39">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>wfnr <span class="op">=</span> wcm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">/</span> (wcm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">+</span> wcm[<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>wfpr <span class="op">=</span> wcm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">/</span> (wcm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">+</span> wcm[<span class="dv">0</span>,<span class="dv">0</span>])</span>
 <span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>wf_rates <span class="op">=</span> <span class="ss">f"The false negative rate of the model for white people is </span><span class="sc">{</span>wfnr<span class="sc">:.2%}</span><span class="ss"> and the false positive rate is </span><span class="sc">{</span>wfpr<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>wf_rates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="40">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <pre><code>'The false negative rate of the model for white people is 15.67% and the false positive rate is 19.04%'</code></pre>
 </div>
 </div>
-<div id="cell-52" class="cell" data-execution_count="41">
+<div id="cell-52" class="cell" data-execution_count="40">
 <div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>bfnr <span class="op">=</span> bcm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">/</span> (bcm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">+</span> bcm[<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>bfpr <span class="op">=</span> bcm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">/</span> (bcm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">+</span> bcm[<span class="dv">0</span>,<span class="dv">0</span>])</span>
 <span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>bf_rates <span class="op">=</span> <span class="ss">f"The false negative rate of the model for black people is </span><span class="sc">{</span>bfnr<span class="sc">:.2%}</span><span class="ss"> and the false positive rate is </span><span class="sc">{</span>bfpr<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>bf_rates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="41">
+<div class="cell-output cell-output-display" data-execution_count="40">
 <pre><code>'The false negative rate of the model for black people is 21.80% and the false positive rate is 17.46%'</code></pre>
 </div>
 </div>
-<div id="cell-53" class="cell" data-execution_count="42">
+<div id="cell-53" class="cell" data-execution_count="41">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>ofnr <span class="op">=</span> ocm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">/</span> (ocm[<span class="dv">1</span>,<span class="dv">0</span>] <span class="op">+</span> ocm[<span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>ofpr <span class="op">=</span> ocm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">/</span> (ocm[<span class="dv">0</span>,<span class="dv">1</span>] <span class="op">+</span> ocm[<span class="dv">0</span>,<span class="dv">0</span>])</span>
 <span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>of_rates <span class="op">=</span> <span class="ss">f"The false negative rate of the model for other people is </span><span class="sc">{</span>ofnr<span class="sc">:.2%}</span><span class="ss"> and the false positive rate is </span><span class="sc">{</span>ofpr<span class="sc">:.2%}</span><span class="ss">"</span></span>
 <span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>of_rates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="42">
+<div class="cell-output cell-output-display" data-execution_count="41">
 <pre><code>'The false negative rate of the model for other people is 15.79% and the false positive rate is 20.21%'</code></pre>
 </div>
 </div>
@@ -1947,7 +1947,7 @@ div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
 <section id="bias-measures" class="level1">
 <h1>Bias Measures</h1>
 <p>Next, we will see whether the error rates are balanced across groups.</p>
-<div id="cell-55" class="cell" data-execution_count="57">
+<div id="cell-55" class="cell" data-execution_count="42">
 <div class="sourceCode cell-code" id="cb70"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'False Positive Rates </span><span class="ch">\n</span><span class="ss">White: </span><span class="sc">{</span>wfpr<span class="sc">:.2%}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">Black: </span><span class="sc">{</span>bfpr<span class="sc">:.2%}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">Other: </span><span class="sc">{</span>ofpr<span class="sc">:.2%}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>False Positive Rates 
@@ -1957,7 +1957,7 @@ Other: 20.21%</code></pre>
 </div>
 </div>
 <p>Although the false positive rates are not equal across groups, they are not significantly different from each other.</p>
-<div id="cell-57" class="cell" data-execution_count="58">
+<div id="cell-57" class="cell" data-execution_count="43">
 <div class="sourceCode cell-code" id="cb72"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'False Negative Rates </span><span class="ch">\n</span><span class="ss">White: </span><span class="sc">{</span>wfnr<span class="sc">:.2%}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">Black: </span><span class="sc">{</span>bfnr<span class="sc">:.2%}</span><span class="ss"> </span><span class="ch">\n</span><span class="ss">Other: </span><span class="sc">{</span>ofnr<span class="sc">:.2%}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>False Negative Rates 
