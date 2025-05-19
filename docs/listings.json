@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/automated_decisions/index.html",
       "/posts/auditing-bias/index.html",
       "/posts/logisitc_regression/index.html",
       "/posts/penguin_blog/index.html",
