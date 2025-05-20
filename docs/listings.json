@@ -3,9 +3,12 @@
     "listing": "/index.html",
     "items": [
       "/posts/automated_decisions/index.html",
+      "/posts/advanced_optimization/index.html",
       "/posts/auditing-bias/index.html",
       "/posts/dissecting_racial_bias/index.html",
+      "/posts/music_classification/index.html",
       "/posts/overfitting/index.html",
+      "/posts/sparse_kernel/index.html",
       "/posts/logisitc_regression/index.html",
       "/posts/penguin_blog/index.html",
       "/posts/perceptron/index.html",
